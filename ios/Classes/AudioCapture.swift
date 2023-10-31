@@ -2,28 +2,20 @@ import Foundation
 import AVFoundation
 
 public class AudioCapture {
-  let audioEngine: AVAudioEngine = AVAudioEngine()
+  var audioEngine: AVAudioEngine = AVAudioEngine()
     private var outputFormat = AVAudioFormat(commonFormat: AVAudioCommonFormat.pcmFormatInt16, sampleRate: 44100, channels: 2, interleaved: true)
   init() {
-      do{
-    let audioSession: AVAudioSession = AVAudioSession.sharedInstance()
-    try audioSession.setCategory(AVAudioSession.Category.playAndRecord,
-                                  mode: AVAudioSession.Mode.default,
-                                 options: [.defaultToSpeaker, .mixWithOthers, .allowBluetoothA2DP, .allowAirPlay, .allowBluetooth])
-    try audioSession.setActive(true)
-      }
-      catch let err {
-          print(err)
-      }
+
   }
-  
+
   deinit{
     audioEngine.inputNode.removeTap(onBus: 0)
     audioEngine.stop()
   }
-  
+
   public func startSession(bufferSize: UInt32, sampleRate: Double, cb: @escaping (_ buffer: Array<Float>) -> Void) throws {
-  
+
+    audioEngine = AVAudioEngine()
     let inputNode = audioEngine.inputNode
     let inputFormat  = inputNode.inputFormat(forBus: 0)
     try! audioEngine.start()
